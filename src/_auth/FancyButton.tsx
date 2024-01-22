@@ -13,14 +13,14 @@ const FancyButton = ({
 
   if (state === "is-authenticating")
     buttonText = (
-      <span>
+      <span className="flex gap-2">
         <Loader /> Authenticating processing
       </span>
     );
 
   if (state === "is-creating-user") {
     buttonText = (
-      <span>
+      <span className="flex gap-2">
         <Loader /> Creating an account
       </span>
     );
@@ -28,7 +28,7 @@ const FancyButton = ({
 
   if (state === "is-signing-in") {
     buttonText = (
-      <span>
+      <span className="flex gap-2">
         <Loader /> Signing in
       </span>
     );

@@ -3,7 +3,7 @@ import * as Toast from "@radix-ui/react-toast";
 import "./Toaster.css";
 
 type IToastType = {
-  variant: "success" | "warning" | "destructive";
+  variant?: "success" | "warning" | "destructive";
   title: string;
   content: string;
 };
