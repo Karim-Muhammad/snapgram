@@ -57,7 +57,7 @@ export function AuthProvder({ children }: { children: React.ReactNode }) {
         username: currentUser.name,
         email: currentUser.email,
         bio: currentUser.bio,
-        imageUrl: currentUser.image,
+        imageUrl: currentUser.imageUrl,
       });
 
       //   setUser(fillable);

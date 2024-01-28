@@ -1,7 +1,8 @@
-import { INewUser } from "@/types";
-import { account, appwriteConfig, avatars, databases } from "./config";
+import { INewPost, INewUser, IUpdatePost } from "@/types";
+import { account, appwriteConfig, avatars, databases, storage } from "./config";
 import { ID, Query } from "appwrite";
 
+// ====================== USERS ======================
 export const createNewUser = async (user: INewUser) => {
   try {
     const newUser = await account.create(
@@ -98,6 +99,193 @@ export const getCurrentUser = async () => {
   } catch (error) {
     console.log("Failed in GetCurrentUser");
     if (error instanceof Error) console.log(error.message);
+    return null;
+  }
+};
+
+export const signOutUser = async () => {
+  try {
+    const session = account.deleteSession("current");
+    if (!session) throw Error;
+
+    return session;
+  } catch (error) {
+    console.log("SignOut Failure!");
+  }
+};
+
+// ====================== POSTS ======================
+
+// General
+export async function uploadFile(file: File) {
+  try {
+    const uploadedFile = await storage.createFile(
+      appwriteConfig.storageId,
+      ID.unique(),
+      file
+    );
+    console.log("Uploaded File", uploadedFile);
+    if (!uploadedFile) throw Error;
+
+    return uploadedFile;
+  } catch (error) {
+    console.log("Failed to upload file");
+    console.log(error instanceof Error ? error.message : "kjkjkj");
+
+    return null;
+  }
+}
+
+export async function getFilePreview(fileId: string) {
+  try {
+    const fileUrl = await storage.getFilePreview(
+      appwriteConfig.storageId,
+      fileId,
+      2000,
+      2000,
+      "top",
+      100
+    );
+    if (!fileUrl) throw Error;
+
+    return fileUrl;
+  } catch (error) {
+    console.log("Failed to get file preview");
+    console.log(error instanceof Error ? error.message : "kjkjkj");
+    return null;
+  }
+}
+
+export async function deleteFile(fileId: string) {
+  try {
+    /* const deletedFile = */ await storage.deleteFile(
+      appwriteConfig.storageId,
+      fileId
+    );
+
+    return { status: "success", message: "File deleted successfully" };
+  } catch (error) {
+    console.log("Failed to delete file");
+    return null;
+  }
+}
+
+export const createPost = async (post: INewPost) => {
+  // First Upload the file to storage
+  // Then save the post in database
+
+  try {
+    console.log(post.file);
+    const uploadedFile = await uploadFile(post.file[0]);
+    if (!uploadedFile) throw Error;
+
+    const filePreview = await getFilePreview(uploadedFile.$id);
+    if (!filePreview) {
+      await deleteFile(uploadedFile.$id);
+      throw Error;
+    }
+
+    const savedPost = await databases.createDocument(
+      appwriteConfig.databaseId,
+      appwriteConfig.postCollectionId,
+      ID.unique(),
+      {
+        creator: post.userId,
+        caption: post.caption,
+        location: post.location,
+        tags: post.tags?.replace(/ /g, "").split(","),
+        imageId: uploadedFile.$id,
+        imageUrl: filePreview,
+      }
+    );
+    if (!savedPost) {
+      await deleteFile(uploadedFile.$id);
+      throw Error;
+    }
+
+    return savedPost;
+  } catch (error) {
+    console.log("Failed to create post");
+    return null;
+  }
+};
+
+export const updatePost = async (post: IUpdatePost) => {
+  console.log(post);
+};
+
+export const getRecentPosts = async () => {
+  // Get the most recent posts
+  try {
+    const recentPosts = await databases.listDocuments(
+      appwriteConfig.databaseId,
+      appwriteConfig.postCollectionId,
+      [Query.orderDesc("$createdAt")]
+    );
+
+    if (!recentPosts) throw Error;
+
+    return recentPosts;
+  } catch (error) {
+    console.log("Failed to get recent posts");
+    return null;
+  }
+};
+
+export const likePost = async (postId: string, likesArray: string[]) => {
+  try {
+    const updateDocument = await databases.updateDocument(
+      appwriteConfig.databaseId,
+      appwriteConfig.postCollectionId,
+      postId,
+      {
+        likes: likesArray,
+      }
+    );
+
+    if (!updateDocument) throw Error;
+
+    return updateDocument;
+  } catch (error) {
+    console.log("Failed to like post");
+    return null;
+  }
+};
+
+export const savePost = async (postId: string, userId: string) => {
+  try {
+    const savedPost = await databases.createDocument(
+      appwriteConfig.databaseId,
+      appwriteConfig.savesCollectionId,
+      ID.unique(),
+      {
+        postId,
+        userId,
+      }
+    );
+
+    if (!savedPost) throw Error;
+
+    return savedPost;
+  } catch (error) {
+    console.log("Failed to save post");
+    return null;
+  }
+};
+
+export const unsavePost = async (postId: string) => {
+  try {
+    const post = await databases.deleteDocument(
+      appwriteConfig.databaseId,
+      appwriteConfig.savesCollectionId,
+      postId
+    );
+
+    if (!post) throw Error;
+
+    return post;
+  } catch (error) {
+    console.log("Failed to unsave post");
     return null;
   }
 };

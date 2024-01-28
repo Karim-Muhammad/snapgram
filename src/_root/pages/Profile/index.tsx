@@ -1,7 +1,5 @@
-import React from "react";
-
-const index = () => {
+const Profile = () => {
   return <div>index</div>;
 };
 
-export default index;
+export default Profile;
