@@ -11,3 +11,9 @@
 9. User Profile Edit - Not yet
 10. User Profile Follow system - Not yet
 11. Comments - Not yet
+
+## Some Bugs
+
+- When use save post from Explore page, this error because of caching system in react-query, i will fix it soon.
+
+- when you save post again from Home page and Explore page (twice), it will be saved twice, i will fix it soon.
