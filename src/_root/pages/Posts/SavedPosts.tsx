@@ -1,6 +1,7 @@
 import GridPostList from "@/components/shared/GridPostList";
 import Loader from "@/components/shared/Loader";
 import { useSavedPostsQuery } from "@/lib/react-query/queries";
+import { Models } from "appwrite";
 
 const SavedPosts = () => {
   // const { data: user, isPending } = useGetUserQuery();
@@ -18,7 +19,7 @@ const SavedPosts = () => {
         },
       ],
     };
-  });
+  }) as Models.Document[];
   console.log("Saved Posts", SavedPosts);
 
   return (
