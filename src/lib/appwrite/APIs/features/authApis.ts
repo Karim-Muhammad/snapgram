@@ -59,10 +59,11 @@ export const saveUserInDB = async (user: {
 export const signInUser = async (user: { email: string; password: string }) => {
   try {
     const session = await account.createEmailSession(user.email, user.password);
+    if (!session) throw new Error("Failed to sign in");
+
     return session;
   } catch (error) {
     console.log(error);
-    return { error: "Failed to sign in" };
   }
 };
 
