@@ -1,5 +1,3 @@
-import React from "react";
-
 import { Link, NavLink, useLocation } from "react-router-dom";
 
 import { useUserContext } from "@/context/AuthContext";

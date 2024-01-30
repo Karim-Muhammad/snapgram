@@ -6,7 +6,7 @@ import {
 import { useGetUserQuery } from "@/lib/react-query/queries";
 import { checkIfUserLikedPost } from "@/lib/utils";
 import { Models } from "appwrite";
-import React, { useState } from "react";
+import { useState } from "react";
 import Loader from "./Loader";
 
 type PostStatsProps = {
