@@ -58,7 +58,7 @@ const SignInForm = () => {
         password: data.password,
       });
 
-      if (session?.error) {
+      if (!session) {
         throw Error("This account is not exist");
       }
 
