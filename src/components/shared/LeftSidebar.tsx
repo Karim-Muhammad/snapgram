@@ -59,7 +59,7 @@ const LeftSidebar = () => {
         <div className="flex flex-col gap-6">
           <div
             className="group flex gap-3 p-4 cursor-pointer"
-            onClick={() => signOut()}
+            onClick={() => signOut().then(() => window.location.reload())}
           >
             <img
               className="group-hover:invert-white"
