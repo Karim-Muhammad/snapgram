@@ -17,3 +17,6 @@
 - When use save post from Explore page, this error because of caching system in react-query, i will fix it soon.
 
 - when you save post again from Home page and Explore page (twice), it will be saved twice, i will fix it soon.
+
+- window.location.reload() is not good for production, i will fix it soon.
+  - use instead `navigate('/sign-in'})`
