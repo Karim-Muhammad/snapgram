@@ -22,3 +22,7 @@ export function formatDateString(dateString: string) {
 
   return `${formattedDate} at ${time}`;
 }
+
+export function checkIfUserLikedPost(likes: string[], userId: string) {
+  return likes.includes(userId);
+}

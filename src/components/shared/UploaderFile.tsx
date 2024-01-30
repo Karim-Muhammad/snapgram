@@ -45,9 +45,14 @@ const UploaderFile = (props: UploaderFileProps) => {
       ) : (
         <div className="file_uploader-box">
           <img
-            src="/assets/icons/file-upload.svg"
-            width={96}
-            height={77}
+            src={
+              props.imageUrl ? props.imageUrl : "/assets/icons/file-upload.svg"
+            }
+            {...(!props.imageUrl && {
+              width: 96,
+              height: 77,
+            })}
+            className="object-cover w-full h-full"
             alt="file-upload-image"
           />
 

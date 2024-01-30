@@ -2,6 +2,7 @@ import { useUserContext } from "@/context/AuthContext";
 import { formatDateString } from "@/lib/utils";
 import { Models } from "appwrite";
 import { Link } from "react-router-dom";
+import PostStats from "./PostStats";
 
 type PostCardProps = {
   post: Models.Document;
@@ -11,7 +12,9 @@ const PostCard = ({ post }: PostCardProps) => {
   const { user } = useUserContext();
   const owner = post?.creator?.$id === user.id;
 
-  console.log(post.tags);
+  // console.log("post", post);
+  // console.log("user", user);
+
   return (
     <div className="post-card">
       <div className="flex-between">
@@ -48,16 +51,17 @@ const PostCard = ({ post }: PostCardProps) => {
           </Link>
         )}
       </div>
+
       <Link to={`/posts/${post.$id}`}>
         <div className="">
-          <p>{post?.caption}</p>
+          <p className="my-3">{post?.caption}</p>
           <ul className="flex gap-2">
             {post?.tags?.map((tag: string) => (
               <li
                 key={tag}
                 className="subtle-semibold lg:small-regular text-light-4"
               >
-                # {tag}
+                #{tag}
               </li>
             ))}
           </ul>
@@ -70,7 +74,7 @@ const PostCard = ({ post }: PostCardProps) => {
         />
       </Link>
 
-      <PostStats post={post} userId={user.id} />
+      <PostStats post={post} currentUserId={user.id} />
     </div>
   );
 };

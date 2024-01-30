@@ -80,8 +80,21 @@ const PostForm = ({ post, action }: PostFormProps) => {
       } catch (error) {
         console.log(error);
       }
-    } else if (action === "Update") {
-      // Pass
+    } else if (post && action === "Update") {
+      updatePost({
+        ...data,
+        postId: post?.$id,
+        imageId: post?.imageId,
+        imageUrl: post?.imageUrl,
+      }).then((_) => {
+        setOpen(true);
+        setToast({
+          title: "Post Updated",
+          content: "Your post has been updated successfully",
+        });
+
+        navigate(`/posts/${post.$id}`);
+      });
       console.log(data);
     }
   };
@@ -118,7 +131,7 @@ const PostForm = ({ post, action }: PostFormProps) => {
               <FormControl>
                 <UploaderFile
                   fieldChange={field.onChange}
-                  // imageUrl={user?.imageUrl}
+                  imageUrl={post?.imageUrl}
                 />
               </FormControl>
               <FormMessage className="shad-form_message" />

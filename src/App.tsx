@@ -46,10 +46,10 @@ function App() {
           <Route path="/liked" element={<LikedPosts />} />
           <Route path="/users" element={<AllUsers />} />
 
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/profile/:id/*" element={<UpdateProfile />} />
-          <Route path="/create-post" element={<CreatePost />} />
-          <Route path="/update-post" element={<UpdatePost />} />
+          <Route path="/profile/:id/*" element={<Profile />} />
+          <Route path="/profile/edit/:id/*" element={<UpdateProfile />} />
+          <Route path="/posts/create" element={<CreatePost />} />
+          <Route path="/posts/edit" element={<UpdatePost />} />
           <Route path="/posts/:id" element={<PostDetails />} />
 
           {/* Fallback */}

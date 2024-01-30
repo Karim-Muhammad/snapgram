@@ -1,29 +1,34 @@
 import React from "react";
 
-import { NavLink, useLocation } from "react-router-dom";
+import { Link, NavLink, useLocation } from "react-router-dom";
 
 import { useUserContext } from "@/context/AuthContext";
 import { sidebarLinks } from "@/constants";
 import { INavLink } from "@/types";
+import { useSignOutAccountMutation } from "@/lib/react-query/mutations";
 
 const LeftSidebar = () => {
   const location = useLocation();
   const { user } = useUserContext();
 
+  const { mutateAsync: signOut } = useSignOutAccountMutation();
+
   return (
     <nav className="leftsidebar">
       <div className="flex flex-col gap-11 h-full">
-        <NavLink to="/">
+        <Link to="/">
           <img src="/assets/images/logo.svg" width={170} height={36} />
-        </NavLink>
+        </Link>
 
-        <div className="flex gap-3">
-          <img src={user.imageUrl} className="w-11 h-11 rounded-full" />
-          <div className="flex flex-col">
-            <p>{user.name}</p>
-            <p className="small-regular text-slate-600">@{user.username}</p>
+        <Link to={`/profile/${user.id}`}>
+          <div className="flex gap-3">
+            <img src={user.imageUrl} className="w-11 h-11 rounded-full" />
+            <div className="flex flex-col">
+              <p>{user.name}</p>
+              <p className="small-regular text-slate-600">@{user.username}</p>
+            </div>
           </div>
-        </div>
+        </Link>
 
         <ul className="flex flex-col gap-6 h-full">
           {sidebarLinks.map((link: INavLink) => {
@@ -54,15 +59,16 @@ const LeftSidebar = () => {
         </ul>
 
         <div className="flex flex-col gap-6">
-          <NavLink to="/logout" className="leftsidebar-link">
-            <div className="group flex gap-3 p-4 cursor-pointer">
-              <img
-                className="group-hover:invert-white"
-                src="/assets/icons/logout.svg"
-              />
-              Logout
-            </div>
-          </NavLink>
+          <div
+            className="group flex gap-3 p-4 cursor-pointer"
+            onClick={() => signOut()}
+          >
+            <img
+              className="group-hover:invert-white"
+              src="/assets/icons/logout.svg"
+            />
+            Logout
+          </div>
         </div>
       </div>
     </nav>

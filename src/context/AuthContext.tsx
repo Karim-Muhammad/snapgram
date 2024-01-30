@@ -1,5 +1,5 @@
 import ToasterProvider from "@/components/shared/radix-ui/ToasterProvider";
-import { getCurrentUser } from "@/lib/appwrite/apis";
+import { getCurrentUser } from "@/lib/appwrite/APIs";
 import { IUser } from "@/types";
 import { createContext, useContext, useEffect, useState } from "react";
 
@@ -54,13 +54,12 @@ export function AuthProvder({ children }: { children: React.ReactNode }) {
       setUser({
         id: currentUser.$id,
         name: currentUser.name,
-        username: currentUser.name,
+        username: currentUser.username,
         email: currentUser.email,
         bio: currentUser.bio,
         imageUrl: currentUser.imageUrl,
       });
 
-      //   setUser(fillable);
       setIsAuthenticated(true);
 
       return true;
@@ -68,10 +67,6 @@ export function AuthProvder({ children }: { children: React.ReactNode }) {
       console.log(error);
       setIsAuthenticated(false);
       return false;
-
-      //   if (error instanceof Error)
-      //     return { error: error.message };
-      //   return { error: "Something went wrong" };
     } finally {
       setIsLoading(false);
     }

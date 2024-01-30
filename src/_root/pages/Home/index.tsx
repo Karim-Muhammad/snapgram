@@ -1,13 +1,33 @@
+import { useEffect } from "react";
+import { useInView } from "react-intersection-observer";
+
+import { Models } from "appwrite";
 import Loader from "@/components/shared/Loader";
 import PostCard from "@/components/shared/PostCard";
 import { useGetRecentPostsQuery } from "@/lib/react-query/queries";
-import { Models } from "appwrite";
 
 const Home = () => {
-  const { data: posts, isPending, isError } = useGetRecentPostsQuery();
-  console.log("Posts", posts);
-  if (isError) {
-    return <div>Error</div>;
+  const { ref, inView } = useInView();
+
+  const {
+    data: posts,
+    hasNextPage,
+    fetchNextPage,
+    isPending,
+    isError,
+    isLoadingError,
+  } = useGetRecentPostsQuery();
+
+  useEffect(() => {
+    if (inView) fetchNextPage();
+  }, [inView]);
+
+  if (isError || isLoadingError) {
+    return (
+      <div className="text-center text-white bg-red px-4 py-2">
+        Error - Something went wrong
+      </div>
+    );
   }
 
   return (
@@ -18,14 +38,22 @@ const Home = () => {
           <Loader />
         ) : (
           <ul className="flex flex-col flex-1 gap-9 w-full">
-            {posts?.documents?.map((post: Models.Document) => (
-              <li key={post.$id} className="">
-                <PostCard post={post} />
-              </li>
-            ))}
+            {posts?.pages?.map((page) => {
+              return page.documents.map((post: Models.Document) => (
+                <li key={post.$id} className="">
+                  <PostCard post={post} />
+                </li>
+              ));
+            })}
           </ul>
         )}
       </div>
+
+      {hasNextPage && (
+        <div ref={ref} className="mt-7">
+          <Loader />
+        </div>
+      )}
     </div>
   );
 };

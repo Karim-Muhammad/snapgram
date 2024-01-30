@@ -31,8 +31,6 @@ const ToasterProvider = ({ children }: { children: ReactNode }) => {
     setToast,
   };
 
-  console.log(open, toast);
-
   return (
     <ToastContext.Provider value={value}>
       <Toast.Provider swipeDirection="right">
