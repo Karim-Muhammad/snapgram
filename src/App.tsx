@@ -5,7 +5,19 @@ import { Route, Routes } from "react-router-dom";
 import SignInForm from "./_auth/pages/SignInForm";
 import SignUpForm from "./_auth/pages/SignUpForm";
 // Pages
-import { Home } from "./_root/pages";
+import {
+  AllUsers,
+  CreatePost,
+  Explore,
+  Home,
+  LikedPosts,
+  NotFound,
+  PostDetails,
+  Profile,
+  SavedPosts,
+  UpdatePost,
+  UpdateProfile,
+} from "./_root/pages";
 // Layouts
 import AuthLayout from "./_auth/AuthLayout";
 import RootLayout from "./_root/RootLayout";
@@ -16,7 +28,7 @@ import { Toaster } from "./components/ui/toaster";
 
 function App() {
   return (
-    <main>
+    <main className="flex w-full h-screen">
       <Toaster />
 
       <Routes>
@@ -29,6 +41,19 @@ function App() {
         {/* Private Routes */}
         <Route element={<RootLayout />}>
           <Route index element={<Home />} />
+          <Route path="/explore" element={<Explore />} />
+          <Route path="/saved" element={<SavedPosts />} />
+          <Route path="/liked" element={<LikedPosts />} />
+          <Route path="/users" element={<AllUsers />} />
+
+          <Route path="/profile/:id/*" element={<Profile />} />
+          <Route path="/profile/edit/:id/*" element={<UpdateProfile />} />
+          <Route path="/posts/create" element={<CreatePost />} />
+          <Route path="/posts/edit" element={<UpdatePost />} />
+          <Route path="/posts/:id" element={<PostDetails />} />
+
+          {/* Fallback */}
+          <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
     </main>

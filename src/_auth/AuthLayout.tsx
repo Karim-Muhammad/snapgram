@@ -9,9 +9,9 @@ const AuthLayout = () => {
       {isAuth ? (
         <Navigate to="/" />
       ) : (
-        <div className="flex">
+        <div className="flex w-full">
           {/* Left Side */}
-          <section className="flex flex-col flex-1 justify-center items-center py-10">
+          <section className="flex w-full flex-col flex-1 justify-center items-center py-10">
             <div>
               <Outlet />
             </div>

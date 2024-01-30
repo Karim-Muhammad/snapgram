@@ -1,7 +1,8 @@
 import { INewUser } from "@/types";
-import { account, appwriteConfig, avatars, databases } from "./config";
+import { account, appwriteConfig, avatars, databases } from "../../config";
 import { ID, Query } from "appwrite";
 
+// ---------------- Create User
 export const createNewUser = async (user: INewUser) => {
   try {
     const newUser = await account.create(
@@ -31,6 +32,7 @@ export const createNewUser = async (user: INewUser) => {
   }
 };
 
+// ---------------- Save User in Database
 export const saveUserInDB = async (user: {
   accountId: string;
   name: string;
@@ -53,6 +55,7 @@ export const saveUserInDB = async (user: {
   }
 };
 
+// ---------------- Sign In
 export const signInUser = async (user: { email: string; password: string }) => {
   try {
     const session = await account.createEmailSession(user.email, user.password);
@@ -63,18 +66,19 @@ export const signInUser = async (user: { email: string; password: string }) => {
   }
 };
 
-// Getting by Cookies and Sessions
+// ---------------- Getting by Cookies and Sessions
 export const getAccount = async () => {
   try {
     const currentAccount = await account.get();
-    console.log("ACCOUNT DETAILS", currentAccount);
 
     return currentAccount;
   } catch (error) {
     console.log("Failed Getting Account", error);
+    return null;
   }
 };
 
+// ---------------- Getting by Account ID
 export const getCurrentUser = async () => {
   try {
     // 1#
@@ -97,7 +101,27 @@ export const getCurrentUser = async () => {
     return userDocument.documents[0];
   } catch (error) {
     console.log("Failed in GetCurrentUser");
-    if (error instanceof Error) console.log(error.message);
-    return null;
   }
 };
+
+// ---------------- Sign Out
+export async function signOutUser() {
+  try {
+    const session = await account.deleteSession("current");
+
+    return session;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+const AuthApis = {
+  createNewUser,
+  saveUserInDB,
+  signInUser,
+  getAccount,
+  getCurrentUser,
+  signOutUser,
+};
+
+export default AuthApis;

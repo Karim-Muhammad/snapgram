@@ -3,7 +3,7 @@ import * as zod from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 // React Router DOM
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 // ---------- UI Components ----------
 import {
@@ -15,7 +15,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 // ---------- Other ----------
@@ -23,13 +22,25 @@ import { useForm } from "react-hook-form";
 
 // Schema
 import { SignInSchema } from "@/lib/validation";
-import SignHeader from "../partials/SignHeader";
-import Loader from "@/components/shared/Loader";
+
+// Custom Hooks
 import { useUserContext } from "@/context/AuthContext";
+import { useSignInMutation } from "@/lib/react-query/mutations";
+
+// Components
+import SignHeader from "../partials/SignHeader";
+import FancyButton from "../FancyButton";
+import { useToastContext } from "@/components/shared/radix-ui/ToasterProvider";
 
 const SignInForm = () => {
   // States
-  const { isLoading } = useUserContext();
+  const navigate = useNavigate();
+  const { isLoading: isAuthenticating } = useUserContext();
+  const { mutateAsync: signInUser, isPending: isSignInUser } =
+    useSignInMutation();
+
+  // Context
+  const { setOpen, setToast } = useToastContext();
 
   // React Hook Form
   const form = useForm<zod.infer<typeof SignInSchema>>({
@@ -40,9 +51,40 @@ const SignInForm = () => {
     },
   });
 
-  const onSubmit = (data: zod.infer<typeof SignInSchema>) => {
-    console.log(data);
+  const onSubmit = async (data: zod.infer<typeof SignInSchema>) => {
+    try {
+      const session = await signInUser({
+        email: data.email,
+        password: data.password,
+      });
+
+      if (session?.error) {
+        throw Error("This account is not exist");
+      }
+
+      setToast({
+        title: "Sign In Success",
+        content: "Welcome to Snapgram, let's explore more fantacy!",
+      });
+      setOpen(true);
+
+      navigate("/");
+      return;
+    } catch (error) {
+      console.log(error);
+      setToast({
+        title: "Authentication Error",
+        content: "Account is not exists",
+      });
+      setOpen(true);
+
+      return;
+    }
   };
+
+  let buttonState = "idle";
+  if (isAuthenticating) buttonState = "is-authenticating";
+  if (isSignInUser) buttonState = "is-signing-in";
 
   return (
     <Form {...form}>
@@ -88,9 +130,7 @@ const SignInForm = () => {
           )}
         />
 
-        <Button type="submit" className="shad-button_primary">
-          {isLoading ? <Loader /> : "Sign In"}
-        </Button>
+        <FancyButton state={buttonState}>Sign In</FancyButton>
       </form>
 
       <div className="flex flex-col items-center pt-5">
