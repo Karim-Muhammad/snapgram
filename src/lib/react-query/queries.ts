@@ -9,6 +9,7 @@ import {
   getSavedPosts,
 } from "../appwrite/APIs";
 import { getUsers } from "../appwrite/APIs/features/userApis";
+import { getPostByTag } from "../appwrite/APIs/features/postsApis";
 
 // ====================== USERS ======================
 // ---------------- Get Current User Query
@@ -79,7 +80,7 @@ export const useGetPostByIdQuery = (postId: string) => {
 export const useGetPostByTagQuery = (tag: string) => {
   return useQuery({
     queryKey: [QUERY_KEYS.GET_POST_BY_ID],
-    queryFn: () => getPostById(tag),
+    queryFn: () => getPostByTag(tag),
     enabled: !!tag, // only run if tag is defined (doesn't understand it)
   });
 };
